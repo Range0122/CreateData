@@ -16,7 +16,7 @@ cursor = conn.cursor()
 
 #特定微信群
 cursor.execute("INSERT INTO weixin_group VALUES(NULL,'的士联盟',%s)", (create_datetime(),))
-for i in xrange(0, 788):
+for i in xrange(0, 789):
     cursor.execute(
         "INSERT INTO group2person VALUES(NULL, (SELECT id FROM weixin_group WHERE groupName = %s),(SELECT accountID FROM weixinpersoninfo ORDER BY  RAND() LIMIT 1))",('的士联盟',))
     conn.commit()
