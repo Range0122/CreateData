@@ -7,8 +7,8 @@ group_words = ["幸福", "之家", "美满", "平安", "安康", "小屋", "一�
                "之树", "生活", "哈哈哈", "蛇皮", "富足", "愉悦", "海洋", "森林", "家园", "之门", "光明"]
 
 def create_datetime():
-    time = str(random.randint(2010, 2016)) + '-' + str(random.randint(1, 12)) + '-' + str(random.randint(1, 28)) + ' ' + \
-           str(random.randint(0, 23)) + ':' + str(random.randint(0, 59)) + ':' + str(random.randint(0, 59))
+    time = str(random.randint(2010, 2016)) + '-' + str('%.2d' % random.randint(1, 12)) + '-' + str('%.2d' % random.randint(1, 28)) + ' ' + \
+           str('%.2d' % random.randint(0, 23)) + ':' + str('%.2d' % random.randint(0, 59)) + ':' + str('%.2d' % random.randint(0, 59))
     return time
 
 conn = MySQLdb.connect(host="127.0.0.1", user="root", passwd="123456", db="taxi", port=3306, charset="utf8")
@@ -98,12 +98,27 @@ cursor.execute("INSERT INTO group2person VALUES(NULL, (SELECT id FROM weixin_gro
 cursor.execute("INSERT INTO group2person VALUES(NULL, (SELECT id FROM weixin_group WHERE groupName = '超级无敌银建公司哦'),(SELECT accountID FROM weixinpersoninfo WHERE nickName = '彭高伦'))")
 conn.commit()
 
-for i in xrange(0, 40):
+for i in xrange(0, 30):
     datetime = create_datetime()
     group_name = str(group_words[random.randint(0, len(group_words)-1)]) + str(group_words[random.randint(0, len(group_words)-1)])
     cursor.execute("INSERT INTO weixin_group VALUES(NULL, %s, %s)", (group_name, datetime))
     for j in xrange(3, 7):
         cursor.execute("INSERT INTO group2person VALUES(NULL, (SELECT id FROM weixin_group WHERE groupName = %s ORDER BY  RAND() LIMIT 1),(SELECT accountID FROM weixinpersoninfo ORDER BY  RAND() LIMIT 1))", (group_name,))
+    conn.commit()
+
+
+cursor.execute("SELECT id FROM weixin_group WHERE groupName = '的士联盟'")
+group_id1 = cursor.fetchone()[0]
+cursor.execute("SELECT id FROM weixin_group WHERE groupName = '贵阳出租车'")
+group_id2 = cursor.fetchone()[0]
+
+important_people = ["赵余波","王友奎","万淳洁","苟朝华","李卒","王友平","封华","卞章勇","魏宏","彭高伦","刘洋","刘彬","杜国孝","陈克刚","徐战国","陈勇","孙继亚","胡正军","张宝"]
+
+for i in range(0, len(important_people)-1):
+    cursor.execute("SELECT accountID FROM weixinpersoninfo WHERE nickName = %s", (str(important_people[i]),))
+    person_id = cursor.fetchone()[0]
+    cursor.execute("INSERT INTO group2person VALUES(NULL, %s, %s)", (str(group_id1), str(person_id)))
+    cursor.execute("INSERT INTO group2person VALUES(NULL, %s, %s)", (str(group_id2), str(person_id)))
     conn.commit()
 
 cursor.close()

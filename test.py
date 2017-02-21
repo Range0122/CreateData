@@ -2,6 +2,11 @@
 import xlrd
 import MySQLdb
 import random
+import time
+import datetime
 
-for i in range(0,100):
-    print random.randint(0,1)
+normal_multiple_chart = open('normal_multiple_chat.txt', 'r')
+content = normal_multiple_chart.readline()
+while content != '':
+    print content
+    content = normal_multiple_chart.readline()
