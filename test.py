@@ -3,7 +3,6 @@ import xlrd
 import MySQLdb
 import random
 import time
-import datetime
 
 normal_multiple_chart = open('normal_multiple_chat.txt', 'r')
 content = normal_multiple_chart.readline()
